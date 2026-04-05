@@ -15,19 +15,32 @@ void ThirdPersonCamera::SetTarget(Entity* target) {
 }
 
 void ThirdPersonCamera::Update(float deltaTime) {
-    if (!m_target) return;
-
-    // 鼠标输入
-    float dx, dy;
-    Input::GetMouseDelta(dx, dy);
-    if (dx != 0.0f || dy != 0.0f) {
-        m_yaw += dx * m_sensitivity;
-        m_pitch -= dy * m_sensitivity;
-        if (m_pitch > 89.0f) m_pitch = 89.0f;
-        if (m_pitch < -89.0f) m_pitch = -89.0f;
+    static int frameCount = 0;
+    if (frameCount++ % 60 == 0) {
+        std::cout << "ThirdPersonCamera::Update called" << std::endl;
     }
 
-    // 计算相机位置（球坐标）
+    if (!m_target) {
+        std::cout << "No target set!" << std::endl;
+        return;
+    }
+
+    // 获取鼠标偏移
+    float dx, dy;
+    Input::GetMouseDelta(dx, dy);
+    static int mouseFrame = 0;
+    if (mouseFrame++ % 60 == 0) {
+        std::cout << "Mouse delta: dx=" << dx << ", dy=" << dy << std::endl;
+    }
+
+    // 更新角度
+    m_yaw += dx * m_sensitivity;
+    m_pitch -= dy * m_sensitivity;
+    // 限制俯仰角
+    if (m_pitch > 89.0f) m_pitch = 89.0f;
+    if (m_pitch < -89.0f) m_pitch = -89.0f;
+
+    // 计算相机位置
     glm::vec3 targetPos = m_target->GetTransform()->GetPosition();
     float radYaw = glm::radians(m_yaw);
     float radPitch = glm::radians(m_pitch);
@@ -38,11 +51,10 @@ void ThirdPersonCamera::Update(float deltaTime) {
     offset *= m_distance;
     glm::vec3 cameraPos = targetPos + offset;
 
-    // 设置相机实体的位置和旋转
+    // 设置相机位置和旋转
     Transform* camTransform = GetEntity()->GetTransform();
     camTransform->SetPosition(cameraPos);
-    // 让相机看向目标
     glm::vec3 forward = glm::normalize(targetPos - cameraPos);
-    glm::quat rotation = glm::quatLookAt(forward, glm::vec3(0, 1, 0));
+    glm::quat rotation = glm::quatLookAt(forward, glm::vec3(0.0f, 1.0f, 0.0f));
     camTransform->SetRotation(rotation);
 }

@@ -47,29 +47,40 @@ void Animator::Update(float deltaTime) {
     std::unordered_map<std::string, glm::mat4> localTransforms;
     m_clip->Update(m_currentTime, localTransforms);
 
-    // 应用节点变换（非骨骼动画）
-    for (auto& pair : localTransforms) {
-        const std::string& nodeName = pair.first;
-        const glm::mat4& localMatrix = pair.second;
-        auto it = m_nodeMap.find(nodeName);
-        if (it != m_nodeMap.end()) {
-            Entity* entity = it->second;
-            if (entity) {
-                // 从矩阵中提取位置、旋转、缩放
-                glm::vec3 position = localMatrix[3];
-                glm::vec3 scale(glm::length(localMatrix[0]), glm::length(localMatrix[1]), glm::length(localMatrix[2]));
-                glm::mat3 rotMat3(localMatrix[0] / scale.x, localMatrix[1] / scale.y, localMatrix[2] / scale.z);
-                glm::quat rotation = glm::quat_cast(rotMat3);
-                Transform* transform = entity->GetTransform();
-                transform->SetPosition(position);
-                transform->SetRotation(rotation);
-                transform->SetScale(scale);
-            }
-        }
+    // 调试输出
+    static int frame = 0;
+    if (frame++ % 60 == 0) {
+        std::cout << "Animator Update: time=" << m_currentTime 
+                  << ", localTransforms size=" << localTransforms.size()
+                  << ", hasSkeleton=" << (m_skeleton ? "yes" : "no")
+                  << ", nodeMap size=" << m_nodeMap.size() << std::endl;
     }
 
-    // 骨骼动画（如果有骨骼）
+    // 如果有骨骼，则计算骨骼矩阵（蒙皮动画）
     if (m_skeleton) {
         m_skeleton->ComputeFinalMatrices(localTransforms, m_boneMatrices);
+        if (frame % 60 == 0) {
+            std::cout << "Bone matrices computed, count=" << m_boneMatrices.size() << std::endl;
+        }
+    } else {
+        // 节点动画：直接应用变换到实体（适用于无骨骼模型，如盒子）
+        for (auto& pair : localTransforms) {
+            const std::string& nodeName = pair.first;
+            const glm::mat4& localMatrix = pair.second;
+            auto it = m_nodeMap.find(nodeName);
+            if (it != m_nodeMap.end()) {
+                Entity* entity = it->second;
+                if (entity) {
+                    glm::vec3 position = localMatrix[3];
+                    glm::vec3 scale(glm::length(localMatrix[0]), glm::length(localMatrix[1]), glm::length(localMatrix[2]));
+                    glm::mat3 rotMat3(localMatrix[0] / scale.x, localMatrix[1] / scale.y, localMatrix[2] / scale.z);
+                    glm::quat rotation = glm::quat_cast(rotMat3);
+                    Transform* transform = entity->GetTransform();
+                    transform->SetPosition(position);
+                    transform->SetRotation(rotation);
+                    transform->SetScale(scale);
+                }
+            }
+        }
     }
 }

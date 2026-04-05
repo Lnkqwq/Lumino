@@ -22,8 +22,10 @@ void Application::Run() {
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
+        // 先重置本帧的输入状态（包括鼠标 delta）
+        Input::Update();
+        // 再处理窗口事件（鼠标回调会累加新的 delta）
         m_window->PollEvents();
-        Input::Update();  // 更新输入状态
 
         m_scene->Update(deltaTime);
         m_scene->LateUpdate(deltaTime);
@@ -35,7 +37,6 @@ void Application::Run() {
         m_window->SwapBuffers();
     }
 }
-
 void Application::Quit() {
     m_running = false;
 }
