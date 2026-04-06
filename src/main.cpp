@@ -46,6 +46,8 @@ int main() {
         return -1;
     }
 
+    auto playerCtrl = playerEntity->GetComponent<PlayerController>();
+
     // 3. 创建相机
     Entity* cameraEntity = scene->CreateEntity("MainCamera");
     Camera* camera = cameraEntity->AddComponent<Camera>();
@@ -58,6 +60,10 @@ int main() {
     thirdPerson->SetDistance(5.0f);
     thirdPerson->SetSensitivity(0.1f);
     std::cout << "ThirdPersonCamera attached, target = character" << std::endl;
+
+    if (playerCtrl) {
+    playerCtrl->SetCamera(thirdPerson);
+}
 
     // 可选：手动设置相机初始位置（组件会覆盖，但可用于初始视角）
     cameraEntity->GetTransform()->SetPosition(glm::vec3(0.0f, 2.0f, 5.0f));

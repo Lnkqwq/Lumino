@@ -13,6 +13,8 @@ public:
     void SetDistance(float distance) { m_distance = distance; }
     void SetSensitivity(float sens) { m_sensitivity = sens; }
 
+    float GetYaw() const { return m_yaw; }
+
 private:
     Entity* m_target;
     float m_distance;
