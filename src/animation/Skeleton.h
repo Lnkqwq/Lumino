@@ -4,12 +4,14 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 
-class Skeleton {
-public:
+class Skeleton 
+{
+ public:
     Skeleton();
     ~Skeleton();
 
-    struct Bone {
+    struct Bone 
+    {
         std::string name;
         int parentIndex;
         glm::mat4 inverseBindMatrix;
@@ -21,7 +23,7 @@ public:
     void ComputeFinalMatrices(const std::unordered_map<std::string, glm::mat4>& localTransforms,
                               std::vector<glm::mat4>& outFinalMatrices) const;
 
-private:
+ private:
     std::vector<Bone> m_bones;
     std::unordered_map<std::string, int> m_nameToIndex;
 };

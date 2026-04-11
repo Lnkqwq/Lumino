@@ -1,0 +1,3 @@
+C:/Users/34035/Lumino/build/CMakeFiles/Lumino.dir
+C:/Users/34035/Lumino/build/CMakeFiles/edit_cache.dir
+C:/Users/34035/Lumino/build/CMakeFiles/rebuild_cache.dir

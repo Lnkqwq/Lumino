@@ -6,18 +6,21 @@
 #include <GLFW/glfw3.h>
 
 Application::Application()
-    : m_running(true) {
-    m_window = std::make_unique<Window>();
-    m_renderer = std::make_unique<Renderer>();
-    m_scene = std::make_unique<Scene>();
-}
+    : m_running(true) 
+    {
+      m_window = std::make_unique<Window>();
+      m_renderer = std::make_unique<Renderer>();
+      m_scene = std::make_unique<Scene>();
+    }
 
 Application::~Application() = default;
 
-void Application::Run() {
+void Application::Run() 
+{
     float lastTime = (float)glfwGetTime();
 
-    while (m_running && !m_window->ShouldClose()) {
+    while (m_running && !m_window->ShouldClose()) 
+    {
         float currentTime = (float)glfwGetTime();
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;
@@ -37,6 +40,7 @@ void Application::Run() {
         m_window->SwapBuffers();
     }
 }
-void Application::Quit() {
+void Application::Quit() 
+{
     m_running = false;
 }

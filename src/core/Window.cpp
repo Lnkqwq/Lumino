@@ -3,25 +3,29 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-class Window::Impl {
-public:
+class Window::Impl 
+{
+ public:
     GLFWwindow* window;
     int width, height;
 
-    Impl() : window(nullptr), width(1280), height(720) {
-        if (!glfwInit()) {
+    Impl() : window(nullptr), width(1280), height(720) 
+    {
+        if (!glfwInit()) 
+        {
             std::cerr << "Failed to initialize GLFW" << std::endl;
             return;
         }
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
+ #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+ #endif
 
         window = glfwCreateWindow(width, height, "Lumino Engine", nullptr, nullptr);
-        if (!window) {
+        if (!window) 
+        {
             glfwTerminate();
             std::cerr << "Failed to create GLFW window" << std::endl;
             return;
@@ -30,18 +34,22 @@ public:
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // 默认捕获鼠标
 
         // 设置回调，传递指针到Input静态类
-        glfwSetKeyCallback(window, [](GLFWwindow* w, int key, int scancode, int action, int mods) {
+        glfwSetKeyCallback(window, [](GLFWwindow* w, int key, int scancode, int action, int mods) 
+        {
             Input::KeyCallback(key, scancode, action, mods);
         });
-        glfwSetCursorPosCallback(window, [](GLFWwindow* w, double xpos, double ypos) {
+        glfwSetCursorPosCallback(window, [](GLFWwindow* w, double xpos, double ypos) 
+        {
             Input::MousePosCallback(xpos, ypos);
         });
-        glfwSetMouseButtonCallback(window, [](GLFWwindow* w, int button, int action, int mods) {
+        glfwSetMouseButtonCallback(window, [](GLFWwindow* w, int button, int action, int mods) 
+        {
             Input::MouseButtonCallback(button, action, mods);
         });
     }
 
-    ~Impl() {
+    ~Impl() 
+    {
         if (window) glfwDestroyWindow(window);
         glfwTerminate();
     }

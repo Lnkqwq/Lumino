@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 
-class Window {
-public:
+class Window 
+{
+ public:
     Window();
     ~Window();
 
@@ -16,7 +17,7 @@ public:
     float GetAspect() const;
     void* GetNativeWindow() const;  // GLFWwindow*
 
-private:
+ private:
     class Impl;
     Impl* m_impl;
 };

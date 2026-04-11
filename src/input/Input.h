@@ -1,7 +1,8 @@
 #pragma once
 
-class Input {
-public:
+class Input 
+{
+ public:
     static void Update();
     static bool GetKey(int key);
     static bool GetKeyDown(int key);
@@ -16,7 +17,7 @@ public:
     static void MousePosCallback(double xpos, double ypos);
     static void MouseButtonCallback(int button, int action, int mods);
 
-private:
+ private:
     static bool m_keys[512];
     static bool m_keysDown[512];
     static bool m_keysUp[512];

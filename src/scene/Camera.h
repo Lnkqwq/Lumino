@@ -2,8 +2,9 @@
 #include "Component.h"
 #include <glm/glm.hpp>
 
-class Camera : public Component {
-public:
+class Camera : public Component 
+{
+ public:
     Camera();
     void Update(float deltaTime) override;
 
@@ -18,7 +19,7 @@ public:
     float GetNear() const { return m_near; }
     float GetFar() const { return m_far; }
 
-private:
+ private:
     bool m_isPerspective;
     float m_fov;          // degrees, for perspective
     float m_orthoSize;    // for orthographic

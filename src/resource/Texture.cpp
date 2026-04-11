@@ -4,10 +4,12 @@
 #include <glad/glad.h>
 #include <iostream>
 
-Texture::Texture(const std::string& path) {
+Texture::Texture(const std::string& path) 
+{
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(path.c_str(), &m_width, &m_height, &m_channels, 0);
-    if (!data) {
+    if (!data) 
+    {
         std::cerr << "Failed to load texture: " << path << std::endl;
         return;
     }
@@ -24,11 +26,13 @@ Texture::Texture(const std::string& path) {
     stbi_image_free(data);
 }
 
-Texture::~Texture() {
+Texture::~Texture() 
+{
     glDeleteTextures(1, &m_id);
 }
 
-void Texture::Bind(unsigned int slot) const {
+void Texture::Bind(unsigned int slot) const 
+{
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, m_id);
 }

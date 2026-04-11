@@ -6,8 +6,9 @@ class Mesh;
 class Material;
 class Shader;
 
-class MeshRenderer : public Component {
-public:
+class MeshRenderer : public Component 
+{
+ public:
     MeshRenderer();
     ~MeshRenderer();
 
@@ -16,7 +17,7 @@ public:
 
     void Draw(Shader* shader);
 
-private:
+ private:
     std::shared_ptr<Mesh> m_mesh;
     std::shared_ptr<Material> m_material;
 };

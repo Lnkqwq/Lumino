@@ -20,7 +20,8 @@
 
 static std::unordered_map<std::string, Entity*> s_nodeToEntity;
 
-static glm::mat4 ToGLMMat4(const cgltf_float mat[16]) {
+static glm::mat4 ToGLMMat4(const cgltf_float mat[16]) 
+{
     glm::mat4 m;
     for (int i = 0; i < 4; ++i)
         for (int j = 0; j < 4; ++j)
@@ -28,17 +29,21 @@ static glm::mat4 ToGLMMat4(const cgltf_float mat[16]) {
     return m;
 }
 
-static glm::vec3 ToGLMVec3(const cgltf_float vec[3]) {
+static glm::vec3 ToGLMVec3(const cgltf_float vec[3]) 
+{
     return glm::vec3(vec[0], vec[1], vec[2]);
 }
 
-static glm::quat ToGLMQuat(const cgltf_float quat[4]) {
+static glm::quat ToGLMQuat(const cgltf_float quat[4]) 
+{
     return glm::quat(quat[3], quat[0], quat[1], quat[2]);
 }
 
-static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, const glm::mat4& parentTransform = glm::mat4(1.0f)) {
+static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, const glm::mat4& parentTransform = glm::mat4(1.0f)) 
+{
     glm::mat4 localMatrix(1.0f);
-    if (node->has_matrix) {
+    if (node->has_matrix) 
+    {
         localMatrix = ToGLMMat4(node->matrix);
     } else {
         glm::vec3 translation(0.0f);
@@ -68,8 +73,10 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
     entity->GetTransform()->SetScale(scale);
 
     // 处理 Mesh
-    if (node->mesh) {
-        for (cgltf_size p = 0; p < node->mesh->primitives_count; ++p) {
+    if (node->mesh) 
+    {
+        for (cgltf_size p = 0; p < node->mesh->primitives_count; ++p) 
+        {
             cgltf_primitive* prim = &node->mesh->primitives[p];
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
@@ -82,7 +89,8 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
             cgltf_accessor* texAccessor = nullptr;
             cgltf_accessor* jointsAccessor = nullptr;
             cgltf_accessor* weightsAccessor = nullptr;
-            for (cgltf_size i = 0; i < prim->attributes_count; ++i) {
+            for (cgltf_size i = 0; i < prim->attributes_count; ++i) 
+            {
                 if (prim->attributes[i].type == cgltf_attribute_type_position) posAccessor = prim->attributes[i].data;
                 else if (prim->attributes[i].type == cgltf_attribute_type_normal) normalAccessor = prim->attributes[i].data;
                 else if (prim->attributes[i].type == cgltf_attribute_type_texcoord) texAccessor = prim->attributes[i].data;
@@ -91,10 +99,12 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
             }
             cgltf_accessor* indexAccessor = prim->indices;
 
-            if (posAccessor) {
+            if (posAccessor) 
+            {
                 cgltf_buffer_view* view = posAccessor->buffer_view;
                 char* data = (char*)view->buffer->data + view->offset + posAccessor->offset;
-                for (cgltf_size i = 0; i < posAccessor->count; ++i) {
+                for (cgltf_size i = 0; i < posAccessor->count; ++i) 
+                {
                     float* pos = (float*)(data + i * posAccessor->stride);
                     glm::vec3 position(pos[0], pos[1], pos[2]);
                     glm::vec3 normal(0.0f);
@@ -111,10 +121,12 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
                     }
                     if (jointsAccessor) {
                         char* jntData = (char*)jointsAccessor->buffer_view->buffer->data + jointsAccessor->buffer_view->offset + jointsAccessor->offset + i * jointsAccessor->stride;
-                        if (jointsAccessor->component_type == cgltf_component_type_r_8u) {
+                        if (jointsAccessor->component_type == cgltf_component_type_r_8u) 
+                        {
                             uint8_t* j = (uint8_t*)jntData;
                             joints = glm::ivec4(j[0], j[1], j[2], j[3]);
-                        } else if (jointsAccessor->component_type == cgltf_component_type_r_16u) {
+                        } else if (jointsAccessor->component_type == cgltf_component_type_r_16u) 
+                        {
                             uint16_t* j = (uint16_t*)jntData;
                             joints = glm::ivec4(j[0], j[1], j[2], j[3]);
                         } else {
@@ -122,7 +134,8 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
                             joints = glm::ivec4(j[0], j[1], j[2], j[3]);
                         }
                     }
-                    if (weightsAccessor) {
+                    if (weightsAccessor) 
+                    {
                         float* w = (float*)((char*)weightsAccessor->buffer_view->buffer->data + weightsAccessor->buffer_view->offset + weightsAccessor->offset + i * weightsAccessor->stride);
                         weights = glm::vec4(w[0], w[1], w[2], w[3]);
                     }
@@ -132,10 +145,12 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
                 }
             }
 
-            if (indexAccessor) {
+            if (indexAccessor) 
+            {
                 cgltf_buffer_view* view = indexAccessor->buffer_view;
                 char* data = (char*)view->buffer->data + view->offset + indexAccessor->offset;
-                for (cgltf_size i = 0; i < indexAccessor->count; ++i) {
+                for (cgltf_size i = 0; i < indexAccessor->count; ++i) 
+                {
                     unsigned int idx;
                     if (indexAccessor->component_type == cgltf_component_type_r_32u)
                         idx = *(unsigned int*)(data + i * indexAccessor->stride);
@@ -149,14 +164,16 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
 
             auto mesh = std::make_shared<Mesh>(vertices, indices);
             auto material = std::make_shared<Material>();
-            if (prim->material && prim->material->has_pbr_metallic_roughness) {
+            if (prim->material && prim->material->has_pbr_metallic_roughness) 
+            {
                 cgltf_float* baseColor = prim->material->pbr_metallic_roughness.base_color_factor;
                 material->SetBaseColor(glm::vec3(baseColor[0], baseColor[1], baseColor[2]));
                 material->SetMetallic(prim->material->pbr_metallic_roughness.metallic_factor);
                 material->SetRoughness(prim->material->pbr_metallic_roughness.roughness_factor);
             }
 
-            if (node->skin != nullptr) {
+            if (node->skin != nullptr) 
+            {
                 auto skinnedRenderer = entity->AddComponent<SkinnedMeshRenderer>();
                 skinnedRenderer->SetMesh(mesh);
                 skinnedRenderer->SetMaterial(material);
@@ -169,26 +186,30 @@ static void ProcessNode(cgltf_node* node, Entity* parentEntity, Scene* scene, co
     }
 
     // 处理子节点
-    for (cgltf_size i = 0; i < node->children_count; ++i) {
+    for (cgltf_size i = 0; i < node->children_count; ++i) 
+    {
         ProcessNode(node->children[i], entity, scene, worldMatrix);
     }
 }
 
-Entity* glTFLoader::Load(const std::string& path, Scene* scene) {
+Entity* glTFLoader::Load(const std::string& path, Scene* scene) 
+{
     std::cout << "glTFLoader::Load: " << path << std::endl;
     s_nodeToEntity.clear();
 
     cgltf_options options = {};
     cgltf_data* data = nullptr;
     cgltf_result result = cgltf_parse_file(&options, path.c_str(), &data);
-    if (result != cgltf_result_success) {
+    if (result != cgltf_result_success) 
+    {
         std::cerr << "Failed to parse glTF: " << path << std::endl;
         return nullptr;
     }
     std::cout << "cgltf parse success." << std::endl;
 
     result = cgltf_load_buffers(&options, data, path.c_str());
-    if (result != cgltf_result_success) {
+    if (result != cgltf_result_success) 
+    {
         std::cerr << "Failed to load buffers" << std::endl;
         cgltf_free(data);
         return nullptr;
@@ -197,34 +218,43 @@ Entity* glTFLoader::Load(const std::string& path, Scene* scene) {
     std::cout << "Loaded " << data->meshes_count << " meshes, " << data->skins_count << " skins, " << data->animations_count << " animations." << std::endl;
 
     Entity* rootEntity = scene->CreateEntity("glTF_Root");
-    if (data->scene) {
-        for (cgltf_size i = 0; i < data->scene->nodes_count; ++i) {
+    if (data->scene) 
+    {
+        for (cgltf_size i = 0; i < data->scene->nodes_count; ++i) 
+        {
             ProcessNode(data->scene->nodes[i], rootEntity, scene);
         }
     } else if (data->scenes_count > 0) {
-        for (cgltf_size i = 0; i < data->scenes[0].nodes_count; ++i) {
+        for (cgltf_size i = 0; i < data->scenes[0].nodes_count; ++i) 
+        {
             ProcessNode(data->scenes[0].nodes[i], rootEntity, scene);
         }
     }
 
     // 解析 Skins
-    for (cgltf_size s = 0; s < data->skins_count; ++s) {
+    Entity* skinnedEntity = nullptr;  // 记录带有蒙皮网格的实体
+    for (cgltf_size s = 0; s < data->skins_count; ++s) 
+    {
         cgltf_skin* skin = &data->skins[s];
         auto skeleton = std::make_shared<Skeleton>();
-        for (cgltf_size j = 0; j < skin->joints_count; ++j) {
+        for (cgltf_size j = 0; j < skin->joints_count; ++j) 
+        {
             cgltf_node* joint = skin->joints[j];
             std::string jointName = joint->name ? joint->name : "Joint";
             int parentIndex = -1;
             if (joint->parent) {
-                for (cgltf_size k = 0; k < skin->joints_count; ++k) {
-                    if (skin->joints[k] == joint->parent) {
+                for (cgltf_size k = 0; k < skin->joints_count; ++k) 
+                {
+                    if (skin->joints[k] == joint->parent) 
+                    {
                         parentIndex = (int)k;
                         break;
                     }
                 }
             }
             glm::mat4 invBind = glm::mat4(1.0f);
-            if (skin->inverse_bind_matrices) {
+            if (skin->inverse_bind_matrices) 
+            {
                 cgltf_accessor* invBindAccessor = skin->inverse_bind_matrices;
                 cgltf_buffer_view* view = invBindAccessor->buffer_view;
                 char* dataPtr = (char*)view->buffer->data + view->offset + invBindAccessor->offset + j * invBindAccessor->stride;
@@ -232,24 +262,47 @@ Entity* glTFLoader::Load(const std::string& path, Scene* scene) {
             }
             skeleton->AddBone(jointName, parentIndex, invBind);
         }
-        for (auto& pair : s_nodeToEntity) {
+        // 将 skeleton 附加到对应的实体（仅第一个找到的蒙皮实体）
+        for (auto& pair : s_nodeToEntity) 
+        {
             Entity* ent = pair.second;
             auto skinned = ent->GetComponent<SkinnedMeshRenderer>();
-            if (skinned) {
+            if (skinned) 
+            {
                 auto animator = ent->AddComponent<Animator>();
                 animator->SetSkeleton(skeleton);
                 skinned->SetAnimator(animator);
+                skinnedEntity = ent;  // 记录
                 break;
             }
         }
     }
 
-    // 解析 Animations
-    for (cgltf_size a = 0; a < data->animations_count; ++a) {
-        cgltf_animation* anim = &data->animations[a];
+    // 解析 Animations（仅对蒙皮实体加载动画，普通模型不创建 Animator）
+    Entity* targetEntity = nullptr;
+    for (auto& pair : s_nodeToEntity)
+    {
+        if (pair.second->GetComponent<SkinnedMeshRenderer>()) 
+        {
+            targetEntity = pair.second;
+            break;
+        }
+    }
+
+    if (targetEntity && data->animations_count > 0) 
+    {
+        auto animator = targetEntity->GetComponent<Animator>();
+        if (!animator) 
+        {
+            animator = targetEntity->AddComponent<Animator>();
+        }
+        // 只加载第一个动画（可根据需要修改）
+        cgltf_animation* anim = &data->animations[0];
         auto clip = std::make_shared<AnimationClip>(anim->name ? anim->name : "Animation");
         float duration = 0.0f;
-        for (cgltf_size c = 0; c < anim->channels_count; ++c) {
+
+        for (cgltf_size c = 0; c < anim->channels_count; ++c) 
+        {
             cgltf_animation_channel* channel = &anim->channels[c];
             cgltf_animation_sampler* sampler = channel->sampler;
             std::string targetNodeName = channel->target_node->name ? channel->target_node->name : "Node";
@@ -259,28 +312,36 @@ Entity* glTFLoader::Load(const std::string& path, Scene* scene) {
 
             cgltf_accessor* input = sampler->input;
             cgltf_accessor* output = sampler->output;
-            if (input && output) {
+            if (input && output) 
+            {
                 float* timeData = (float*)((char*)input->buffer_view->buffer->data + input->buffer_view->offset + input->offset);
-                for (cgltf_size i = 0; i < input->count; ++i) {
+                for (cgltf_size i = 0; i < input->count; ++i) 
+                {
                     animChannel.timeStamps.push_back(timeData[i]);
                     if (timeData[i] > duration) duration = timeData[i];
                 }
 
-                if (channel->target_path == cgltf_animation_path_type_translation) {
+                if (channel->target_path == cgltf_animation_path_type_translation) 
+                {
                     float* outData = (float*)((char*)output->buffer_view->buffer->data + output->buffer_view->offset + output->offset);
-                    for (cgltf_size i = 0; i < output->count; ++i) {
+                    for (cgltf_size i = 0; i < output->count; ++i) 
+                    {
                         glm::vec3 t(outData[i*3], outData[i*3+1], outData[i*3+2]);
                         animChannel.translations.push_back(t);
                     }
-                } else if (channel->target_path == cgltf_animation_path_type_rotation) {
+                } else if (channel->target_path == cgltf_animation_path_type_rotation) 
+                {
                     float* outData = (float*)((char*)output->buffer_view->buffer->data + output->buffer_view->offset + output->offset);
-                    for (cgltf_size i = 0; i < output->count; ++i) {
+                    for (cgltf_size i = 0; i < output->count; ++i) 
+                    {
                         glm::quat q(outData[i*4+3], outData[i*4], outData[i*4+1], outData[i*4+2]);
                         animChannel.rotations.push_back(q);
                     }
-                } else if (channel->target_path == cgltf_animation_path_type_scale) {
+                } else if (channel->target_path == cgltf_animation_path_type_scale) 
+                {
                     float* outData = (float*)((char*)output->buffer_view->buffer->data + output->buffer_view->offset + output->offset);
-                    for (cgltf_size i = 0; i < output->count; ++i) {
+                    for (cgltf_size i = 0; i < output->count; ++i) 
+                    {
                         glm::vec3 s(outData[i*3], outData[i*3+1], outData[i*3+2]);
                         animChannel.scales.push_back(s);
                     }
@@ -290,29 +351,20 @@ Entity* glTFLoader::Load(const std::string& path, Scene* scene) {
         }
         clip->SetDuration(duration);
 
-        // 找到包含 SkinnedMeshRenderer 或 MeshRenderer 的实体，将 Animator 附加到其上
-        Entity* targetEntity = rootEntity;
-        for (auto& pair : s_nodeToEntity) {
-            if (pair.second->GetComponent<SkinnedMeshRenderer>() || pair.second->GetComponent<MeshRenderer>()) {
-                targetEntity = pair.second;
-                break;
-            }
-        }
-        auto animator = targetEntity->GetComponent<Animator>();
-        if (!animator) {
-            animator = targetEntity->AddComponent<Animator>();
-        }
         animator->SetNodeMap(s_nodeToEntity);
         animator->SetAnimationClip(clip);
-        animator->Play(1.0f);
+        // 蒙皮模型默认暂停动画，等待移动时触发播放
+        animator->Pause();
+        animator->SetTime(0.0f);
     }
 
     cgltf_free(data);
-
     // 返回实际包含网格的第一个实体（而不是根节点），这样用户可以直接设置其位置
     Entity* firstMeshEntity = nullptr;
-    for (auto& pair : s_nodeToEntity) {
-        if (pair.second->GetComponent<MeshRenderer>() || pair.second->GetComponent<SkinnedMeshRenderer>()) {
+    for (auto& pair : s_nodeToEntity) 
+    {
+        if (pair.second->GetComponent<MeshRenderer>() || pair.second->GetComponent<SkinnedMeshRenderer>()) 
+        {
             firstMeshEntity = pair.second;
             break;
         }

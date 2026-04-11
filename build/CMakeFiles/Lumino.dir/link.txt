@@ -1,0 +1,3 @@
+C:\Users\34035\Lumino\CMake\bin\cmake.exe -E rm -f CMakeFiles\Lumino.dir/objects.a
+C:\Users\34035\Lumino\mingw64\bin\ar.exe qc CMakeFiles\Lumino.dir/objects.a @CMakeFiles\Lumino.dir\objects1.rsp
+C:\Users\34035\Lumino\mingw64\bin\g++.exe -static-libgcc -static-libstdc++ -Wl,--whole-archive CMakeFiles\Lumino.dir/objects.a -Wl,--no-whole-archive -o Lumino.exe -Wl,--out-implib,libLumino.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Lumino.dir\linkLibs.rsp

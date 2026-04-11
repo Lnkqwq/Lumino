@@ -4,7 +4,8 @@
 
 Transform::Transform() : m_position(0.0f), m_rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)), m_scale(1.0f) {}
 
-glm::mat4 Transform::GetModelMatrix() const {
+glm::mat4 Transform::GetModelMatrix() const 
+{
     glm::mat4 mat = glm::translate(glm::mat4(1.0f), m_position);
     mat = mat * glm::mat4_cast(m_rotation);
     mat = glm::scale(mat, m_scale);

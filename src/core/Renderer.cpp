@@ -3,30 +3,43 @@
 #include "scene/Scene.h"
 #include "scene/Camera.h"
 #include "scene/Entity.h"
-#include "scene/MeshRenderer.h"   // 稍后定义
+#include "scene/MeshRenderer.h"   
 #include "components/SkinnedMeshRenderer.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-Renderer::Renderer() : m_currentCamera(nullptr), m_currentAspect(1.0f) {
+Renderer::Renderer() : m_currentCamera(nullptr), m_currentAspect(1.0f) 
+{
     // 初始化OpenGL
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
+    {
         std::cerr << "Failed to initialize GLAD" << std::endl;
     }
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
 
     m_basicShader = std::make_unique<Shader>("shaders/basic.vert", "shaders/basic.frag");
+    // 加载天空盒着色器
+    m_skyboxShader = std::make_unique<Shader>("shaders/skybox_quad.vert", "shaders/skybox_quad.frag");
+    // 加载天空盒纹理
+ std::vector<std::string> faces = 
+ {
+    "assets/skybox/bluecloud_rt.jpg",   // right
+    "assets/skybox/bluecloud_lf.jpg",   // left
+    "assets/skybox/bluecloud_up.jpg",   // top
+    "assets/skybox/bluecloud_dn.jpg",   // bottom
+    "assets/skybox/bluecloud_ft.jpg",   // front
+    "assets/skybox/bluecloud_bk.jpg"    // back
+ };
+
+ m_skybox = std::make_unique<Skybox>(faces);
+
 }
 
 Renderer::~Renderer() = default;
 
-void Renderer::BeginScene(Camera* camera) {
-        static int frameCount = 0;
-    if (frameCount++ % 60 == 0) std::cout << "Frame " << frameCount << std::endl; // 每60帧打印一次
-
+ void Renderer::BeginScene(Camera* camera) 
+{
     if (!camera) return;
     m_currentCamera = camera;
     m_currentAspect = 1280.0f / 720.0f; // 临时，应该从window获取
@@ -34,14 +47,24 @@ void Renderer::BeginScene(Camera* camera) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::EndScene() {
+void Renderer::EndScene() 
+{
     // 空
 }
 
-void Renderer::RenderScene(Scene* scene) {
+void Renderer::RenderScene(Scene* scene) 
+{
     if (!m_currentCamera) return;
     glm::mat4 view = m_currentCamera->GetViewMatrix();
     glm::mat4 proj = m_currentCamera->GetProjectionMatrix(m_currentAspect);
+
+    // 渲染天空盒（全屏四边形方案）
+    if (m_skybox && m_skyboxShader) 
+    {
+      glDepthMask(GL_FALSE);
+      m_skybox->Draw(m_skyboxShader.get(), view, proj); // 直接传入原始 view 和 proj
+      glDepthMask(GL_TRUE);
+    }
 
     m_basicShader->Use();
     m_basicShader->SetMat4("view", view);
@@ -52,16 +75,19 @@ void Renderer::RenderScene(Scene* scene) {
     m_basicShader->SetVec3("viewPos", camPos);
 
     int meshCount = 0;
-    for (auto& entity : scene->GetAllEntities()) {
+    for (auto& entity : scene->GetAllEntities()) 
+    {
         auto mr = entity->GetComponent<MeshRenderer>();
-        if (mr) {
+        if (mr) 
+        {
             meshCount++;
             glm::mat4 model = entity->GetTransform()->GetModelMatrix();
             m_basicShader->SetMat4("model", model);
             mr->Draw(m_basicShader.get());
         }
         auto skinned = entity->GetComponent<SkinnedMeshRenderer>();
-        if (skinned) {
+        if (skinned) 
+        {
             meshCount++;
             glm::mat4 model = entity->GetTransform()->GetModelMatrix();
             m_basicShader->SetMat4("model", model);
@@ -69,7 +95,8 @@ void Renderer::RenderScene(Scene* scene) {
         }
     }
     static int frame = 0;
-    if (frame++ % 60 == 0) {
+    if (frame++ % 60 == 0) 
+    {
         std::cout << "Frame " << frame << ", meshes rendered: " << meshCount << std::endl;
     }
 }

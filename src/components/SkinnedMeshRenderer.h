@@ -8,8 +8,9 @@ class Material;
 class Shader;
 class Animator;
 
-class SkinnedMeshRenderer : public Component {
-public:
+class SkinnedMeshRenderer : public Component 
+{
+ public:
     SkinnedMeshRenderer();
     ~SkinnedMeshRenderer();
 
@@ -19,7 +20,7 @@ public:
 
     void Draw(Shader* shader);
 
-private:
+ private:
     std::shared_ptr<Mesh> m_mesh;
     std::shared_ptr<Material> m_material;
     Animator* m_animator;

@@ -2,7 +2,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-struct Vertex {
+struct Vertex 
+{
     glm::vec3 Position;
     glm::vec3 Normal;
     glm::vec2 TexCoords;
@@ -10,14 +11,15 @@ struct Vertex {
     glm::vec4 BoneWeights;   // 新增
 };
 
-class Mesh {
-public:
+class Mesh 
+{
+ public:
     Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
     ~Mesh();
 
     void Draw() const;
 
-private:
+ private:
     unsigned int m_VAO, m_VBO, m_EBO;
     unsigned int m_indexCount;
 

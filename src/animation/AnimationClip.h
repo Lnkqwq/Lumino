@@ -4,7 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-struct AnimationChannel {
+struct AnimationChannel 
+{
     std::string nodeName;      // 骨骼或节点名称
     std::vector<float> timeStamps;
     std::vector<glm::vec3> translations;
@@ -12,8 +13,9 @@ struct AnimationChannel {
     std::vector<glm::vec3> scales;
 };
 
-class AnimationClip {
-public:
+class AnimationClip 
+{
+ public:
     AnimationClip(const std::string& name);
     ~AnimationClip();
 
@@ -23,7 +25,7 @@ public:
     float GetDuration() const { return m_duration; }
     void SetDuration(float duration) { m_duration = duration; }
 
-private:
+ private:
     std::string m_name;
     float m_duration;
     std::vector<AnimationChannel> m_channels;

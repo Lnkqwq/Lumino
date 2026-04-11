@@ -14,7 +14,8 @@ bool Input::m_mouseButtonsDown[8];
 bool Input::m_mouseButtonsUp[8];
 bool Input::m_firstMouse = true;
 
-void Input::Update() {
+void Input::Update() 
+{
     // 重置每帧的按键状态（按下/抬起）
     memset(m_keysDown, 0, sizeof(m_keysDown));
     memset(m_keysUp, 0, sizeof(m_keysUp));
@@ -36,19 +37,24 @@ void Input::GetMousePosition(double& x, double& y) { x = m_mouseX; y = m_mouseY;
 bool Input::GetMouseButton(int button) { return m_mouseButtons[button]; }
 bool Input::GetMouseButtonDown(int button) { return m_mouseButtonsDown[button]; }
 
-void Input::KeyCallback(int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS) {
+void Input::KeyCallback(int key, int scancode, int action, int mods) 
+{
+    if (action == GLFW_PRESS) 
+    {
         if (!m_keys[key]) m_keysDown[key] = true;
         m_keys[key] = true;
-    } else if (action == GLFW_RELEASE) {
+    } else if (action == GLFW_RELEASE) 
+    {
         if (m_keys[key]) m_keysUp[key] = true;
         m_keys[key] = false;
     }
 }
 
-void Input::MousePosCallback(double xpos, double ypos) {
+void Input::MousePosCallback(double xpos, double ypos) 
+{
     // 首次进入时，初始化上一帧位置
-    if (m_firstMouse) {
+    if (m_firstMouse) 
+    {
         m_lastMouseX = xpos;
         m_lastMouseY = ypos;
         m_firstMouse = false;
@@ -71,11 +77,14 @@ void Input::MousePosCallback(double xpos, double ypos) {
     m_mouseY = ypos;
 }
 
-void Input::MouseButtonCallback(int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
+void Input::MouseButtonCallback(int button, int action, int mods) 
+{
+    if (action == GLFW_PRESS) 
+    {
         if (!m_mouseButtons[button]) m_mouseButtonsDown[button] = true;
         m_mouseButtons[button] = true;
-    } else if (action == GLFW_RELEASE) {
+    } else if (action == GLFW_RELEASE) 
+    {
         if (m_mouseButtons[button]) m_mouseButtonsUp[button] = true;
         m_mouseButtons[button] = false;
     }

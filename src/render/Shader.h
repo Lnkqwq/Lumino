@@ -3,8 +3,9 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 
-class Shader {
-public:
+class Shader 
+{
+ public:
     Shader(const std::string& vertexPath, const std::string& fragmentPath);
     ~Shader();
 
@@ -18,7 +19,7 @@ public:
     void SetMat4(const std::string& name, const glm::mat4& value) const;
     void SetMat4Array(const std::string& name, const glm::mat4* values, int count) const;
 
-private:
+ private:
     unsigned int m_programID;
     mutable std::unordered_map<std::string, int> m_uniformCache;
 

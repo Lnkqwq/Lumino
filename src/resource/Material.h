@@ -4,8 +4,9 @@
 
 class Texture;
 
-class Material {
-public:
+class Material 
+{
+ public:
     Material();
     ~Material();
 
@@ -22,7 +23,7 @@ public:
     float GetMetallic() const { return m_metallic; }
     float GetRoughness() const { return m_roughness; }
 
-private:
+ private:
     std::shared_ptr<Texture> m_baseColorTexture;
     glm::vec3 m_baseColor;
     float m_metallic;

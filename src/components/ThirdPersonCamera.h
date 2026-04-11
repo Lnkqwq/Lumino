@@ -4,8 +4,9 @@
 
 class Entity;
 
-class ThirdPersonCamera : public Component {
-public:
+class ThirdPersonCamera : public Component 
+{
+ public:
     ThirdPersonCamera();
     void Update(float deltaTime) override;
 
@@ -15,7 +16,7 @@ public:
 
     float GetYaw() const { return m_yaw; }
 
-private:
+ private:
     Entity* m_target;
     float m_distance;
     float m_pitch;      // 俯仰角

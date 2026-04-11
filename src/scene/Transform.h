@@ -3,8 +3,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include "Component.h"
 
-class Transform : public Component {
-public:
+class Transform : public Component 
+{
+ public:
     Transform();
     glm::mat4 GetModelMatrix() const;
 
@@ -21,7 +22,7 @@ public:
     glm::vec3 Right() const;
     glm::vec3 Up() const;
 
-private:
+ private:
     glm::vec3 m_position;
     glm::quat m_rotation;
     glm::vec3 m_scale;

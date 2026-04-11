@@ -2,8 +2,9 @@
 
 class Entity;
 
-class Component {
-public:
+class Component 
+{
+ public:
     virtual ~Component() = default;
     virtual void Start() {}
     virtual void Update(float deltaTime) {}
@@ -11,7 +12,7 @@ public:
 
     Entity* GetEntity() const { return m_entity; }
 
-private:
+ private:
     friend class Entity;
     Entity* m_entity = nullptr;
 };

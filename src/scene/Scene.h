@@ -6,8 +6,9 @@
 class Entity;
 class Camera;
 
-class Scene {
-public:
+class Scene 
+{
+ public:
     Scene();
     ~Scene();
 
@@ -22,7 +23,7 @@ public:
 
     const std::vector<std::unique_ptr<Entity>>& GetAllEntities() const { return m_entities; }
 
-private:
+ private:
     std::vector<std::unique_ptr<Entity>> m_entities;
     Camera* m_mainCamera;
 };

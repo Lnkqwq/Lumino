@@ -9,8 +9,9 @@
 class AnimationClip;
 class Skeleton;
 
-class Animator : public Component {
-public:
+class Animator : public Component 
+{
+ public:
     Animator();
     ~Animator();
 
@@ -25,7 +26,11 @@ public:
     std::shared_ptr<AnimationClip> GetAnimationClip() const { return m_clip; }
     const std::vector<glm::mat4>& GetBoneMatrices() const { return m_boneMatrices; }
 
-private:
+    void Pause();
+    void Resume();
+    void SetTime(float time);
+
+ private:
     std::shared_ptr<AnimationClip> m_clip;
     std::shared_ptr<Skeleton> m_skeleton;
     std::unordered_map<std::string, Entity*> m_nodeMap;

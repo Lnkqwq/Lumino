@@ -4,7 +4,8 @@
 class Entity;
 class Scene;
 
-class glTFLoader {
-public:
+class glTFLoader 
+{
+ public:
     static Entity* Load(const std::string& path, Scene* scene);
 };

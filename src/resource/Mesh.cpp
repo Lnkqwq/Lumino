@@ -1,23 +1,27 @@
 #include "Mesh.h"
 #include <glad/glad.h>
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) 
+{
     SetupMesh(vertices, indices);
 }
 
-Mesh::~Mesh() {
+Mesh::~Mesh() 
+{
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);
     glDeleteBuffers(1, &m_EBO);
 }
 
-void Mesh::Draw() const {
+void Mesh::Draw() const 
+{
     glBindVertexArray(m_VAO);
     glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-void Mesh::SetupMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) {
+void Mesh::SetupMesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) 
+{
     m_indexCount = indices.size();
 
     glGenVertexArrays(1, &m_VAO);

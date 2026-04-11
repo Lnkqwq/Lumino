@@ -10,28 +10,19 @@ ThirdPersonCamera::ThirdPersonCamera()
     : m_target(nullptr), m_distance(2.0f), m_pitch(0.0f), m_yaw(-90.0f),
       m_sensitivity(0.1f), m_firstMouse(true), m_lastMouseX(0), m_lastMouseY(0) {}
 
-void ThirdPersonCamera::SetTarget(Entity* target) {
+void ThirdPersonCamera::SetTarget(Entity* target) 
+{
     m_target = target;
 }
 
-void ThirdPersonCamera::Update(float deltaTime) {
+void ThirdPersonCamera::Update(float deltaTime) 
+{
     static int frameCount = 0;
-    if (frameCount++ % 60 == 0) {
-        std::cout << "ThirdPersonCamera::Update called" << std::endl;
-    }
-
-    if (!m_target) {
-        std::cout << "No target set!" << std::endl;
-        return;
-    }
 
     // 获取鼠标偏移
     float dx, dy;
     Input::GetMouseDelta(dx, dy);
     static int mouseFrame = 0;
-    if (mouseFrame++ % 60 == 0) {
-        std::cout << "Mouse delta: dx=" << dx << ", dy=" << dy << std::endl;
-    }
 
     // 更新角度
     m_yaw += dx * m_sensitivity;
